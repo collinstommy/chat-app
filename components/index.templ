@@ -1,0 +1,42 @@
+package components
+
+templ Index(name string) {
+    @DocType()
+    @Head()
+    @Body(pageIndex(name))
+}
+
+templ pageIndex(name string) {
+  <div>
+    <script>
+    const ws = new WebSocket("ws://localhost:1323/ws");
+
+    ws.onmessage = function (event) {
+      const message = event.data;
+      const chatMessages = document.getElementById("chatMessages");
+      const li = document.createElement("li");
+      li.appendChild(document.createTextNode(message));
+      chatMessages.appendChild(li);
+    };
+
+    function sendMessage() {
+      const messageInput = document.getElementById("messageInput");
+      const message = messageInput.value;
+      ws.send(message);
+      messageInput.value = "";
+    }
+    </script>
+    // <input type="text" id="messageInput" placeholder="Type a message..." />
+    // <button onclick="sendMessage()">Send</button>
+    // <ul id="chatMessages"></ul>
+    <div hx-ext="ws" ws-connect="/chatroom">
+      <div id="notifications"></div>
+      <div id="chat_room">
+
+      </div>
+      <form id="form" ws-send>
+          <input name="chat_message" />
+      </form>
+    </div>
+  </div>
+}
